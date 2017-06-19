@@ -1,3 +1,143 @@
-<h1>
-  {{title}}
-</h1>
+
+<h1> User Application Form</h1>
+
+<div class="button-group" role="group">
+
+  <button type="button" (click)="this.searchOption=false;enterOption=true;" [ngClass]="this.enterOption?'btn btn-primary':'btn btn-default'" >Enter your location</button>
+  <button type="button" (click)="this.searchOption=true;enterOption=false;"  [ngClass]="this.searchOption?'btn btn-primary':'btn btn-default'" >Search user location</button>
+
+
+</div>
+
+<div class="container" >
+  <div class="row" >
+  <div class="col-sm-12 col-md-12" >
+<sebm-google-map [latitude]="userLocation.lattitude"  [longitude]="userLocation.longtitude"  [streetViewControl]="false"  [fitBounds]="bounds" (mapClick)="mapClicked($event)" #trackingMap>
+
+  <sebm-google-map-marker  *ngFor="let marker of markers" [latitude]="marker.lat" [longitude]="marker.lng" [draggable]="marker.draggable"
+                           [style.color]="'red'">
+    <sebm-google-map-info-window *ngIf="marker.name">{{marker.name}}</sebm-google-map-info-window>
+  </sebm-google-map-marker>
+</sebm-google-map>
+  </div>
+  </div>
+</div>
+
+<br>
+<div class="panel panel-default"  *ngIf="enterOption">
+  <div class="panel-heading">Enter your location</div>
+  <div class="panel-body">
+  <div class = "container-fluid" *ngIf="enterOption" >
+
+    <form #locationForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="row" >
+        <div class="col-sm-3 col-md-3" >
+          <label for="name">Name</label>
+        </div>
+        <div class="col-sm-9 col-md-9">
+          <input type="text" id="name" required [(ngModel)]="userLocation.name" name="name" #name="ngModel"/>
+            <div [hidden]="name.valid || name.pristine " class="jasmine-alert">
+              Name is required
+
+            </div>
+        </div>
+      </div>
+
+
+  <br>
+    <div class="row">
+      <div class="col-sm-3 col-md-3" >
+        <label for="location">Location</label></div>
+      <div class="col-sm-9 col-md-9">
+      <textarea  id="location" required [(ngModel)]="userLocation.location" name="location" #location="ngModel" (change)="resetCoords()"></textarea>
+        <div [hidden]="location.valid || location.pristine ">
+          Location is required
+
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+    <div class="row" *ngIf="geoLocationSupported && userLocation.lattitude">
+      <div class="col-sm-3 col-md-3" >
+        <label>Lattitude</label></div>
+      <div class="col-sm-9 col-md-9">
+        {{userLocation.lattitude}}
+      </div>
+
+    </div>
+    <div class="row"  *ngIf="geoLocationSupported && userLocation.longtitude">
+      <div class="col-sm-3 col-md-3" >
+        <label>Longtitude</label></div>
+      <div class="col-sm-9 col-md-9">
+        {{this.userLocation.longtitude}}
+      </div>
+
+    </div>
+
+    <button type="submit" >I am here</button>
+      <button type="button" (click)="clear()">Clear</button>
+  </form>
+</div>
+</div>
+</div>
+
+<div class="panel panel-default"  *ngIf="searchOption">
+  <div class="panel-heading">Search user</div>
+  <div class="panel-body">
+
+<div class = "container" *ngIf="searchOption" >
+
+  <form #locationForm="ngForm" (ngSubmit)="search()">
+
+    <div class="row">
+      <div class="col-sm-3 col-md-3" >
+        <label for="name">Name</label>
+        <input type="text" id="name" required [(ngModel)]="searchedUser.name" name="name" #name="ngModel" (keyup)="search()"/>
+        <div [hidden]="name.valid || name.pristine " class="jasmine-alert">
+          Name is required
+
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <div class="row" *ngIf="searchedUser.location">
+      <div class="col-sm-3 col-md-3" >
+        <label >Location</label></div>
+      <div class="col-sm-9 col-md-9">
+        {{searchedUser.location}}
+      </div>
+    </div>
+
+    <div class="row" *ngIf="searchedUser.lattitude">
+      <div class="col-sm-3 col-md-3" >
+        <label>Lattitude</label></div>
+      <div class="col-sm-9 col-md-9">
+        {{searchedUser.lattitude}}
+      </div>
+
+    </div>
+    <div class="row"  *ngIf="searchedUser.longtitude">
+      <div class="col-sm-3 col-md-3" >
+        <label>Longtitude</label></div>
+      <div class="col-sm-9 col-md-9">
+        {{searchedUser.longtitude}}
+      </div>
+
+    </div>
+
+    <button type="submit" >Locate</button>
+
+
+  </form>
+
+
+</div>
+  </div>
+</div>
+
+
